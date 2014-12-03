@@ -1,0 +1,103 @@
+Practical Machine Learning (PML) - Project
+==========================================
+
+Overview
+--------
+
+1. Getting and cleaning data
+2. Model building: Cross validation
+3. Model building: Predicting results
+4. Result submission
+
+1. Getting and cleaning data
+----------------------------
+
+First step: setting the work directory and loading the required packages: caret and random forests.
+Second step: setting the seed.
+
+The r command bellow for training and testing showed that some columns should be skipped, containing NAs, invalid content like strings and other columns.
+```
+summary(training_original)
+summary(testing_original)
+```
+
+In the end the colsSkip object was built to contain all column names to delete from both data sets.
+
+```
+training <- training_original[, !(names(training_original) %in% colsSkip)]
+#summary(training)
+trainingCols <- names(training)
+testing <- testing_original[,names(testing_original) %in% trainingCols]
+#summary(testing)
+```
+
+3. Model building: Cross validation
+-------------------
+Considering the predictors we were introduced, I've decided to use random forests. One of the reasons that I decided to used it is because I probably will study it more to see if it can help me classifying some data extra MOOC.
+My major goal was 1st to try using this predictor and by evaluating its performance and by checking the confusion matrix as well as other sub products, I expected to confirm that it can be used to predict the quiz's required output submission.
+To perform the cross validation I've splited the training dataset into 2 datasets, 60% vs 40 % for training and testing.
+
+```
+#building "training" and "testing" subset from the training data set.
+trainingSubSet <- createDataPartition(y=training$classe, p=0.6, list=FALSE)
+trainingTrainSubSet <- training[trainingSubSet, ]
+trainingTestSubSet <- training[-trainingSubSet, ]
+```
+
+Then, I tried to run the predictor with the random forests detault parameters to access its quality.
+
+```
+#compute training using random forests.. and predict
+trainingSubSetRF <- randomForest(classe~., data= trainingTrainSubSet)
+trainingTestSubSetPR <- predict(trainingSubSetRF, trainingTestSubSet)
+```
+
+Later, by building the confusion matrix, I got the following results...
+
+```{r, message=FALSE}
+trainingConfTable <- confusionMatrix(trainingTestSubSetPR, trainingTestSubSet$classe)
+trainingConfTable
+trainingConfTableAll <- confusionMatrix(trainingTestSubSetPR, trainingTestSubSet$classe)$overall
+trainingConfTableAll
+```
+
+The model results above, provided me an idea that it had a good enough accuracy, so it was time to use that with the testing dataset.
+
+3. Model building: Predicting results
+-----------------
+The main idea was to use all training data set with the same model parameters against the testing dataset and check if it could predict the testing classe.
+The random forest model was built like shown bellow as well as its full outputs.
+
+```{r, message=FALSE}
+#build model using random forests..
+modelFitrForest <- randomForest(classe ~ ., data = training, importance = T)
+modelFitrForest
+```
+
+From it, I got the features variance of importance which I've plotted.
+
+```{r, message=FALSE}
+#get the features variance of importance... 
+modelFitrForestVarImpObj <- varImp(modelFitrForest)
+#and plot it...
+varImpPlot(modelFitrForest, sort=TRUE)
+```
+
+The figure above shows which measures are more important to predict the test case classe measure.
+Using that model parameters, the predicted results were obtained next.
+
+```{r, message=FALSE}
+resultrForest <- predict(modelFitrForest, testing)
+```
+
+#INCLUIR E DEPOIS APAGAR: 
+#Describe what they expect the out of sample error to be and estimate the error appropriately with cross-validation?
+
+4. Result submission
+--------------------
+
+My classifier correctly predicted 20/20 test sample classes.
+```{r, message=FALSE}
+resultrForest
+pml_write_files(resultrForest)
+```
