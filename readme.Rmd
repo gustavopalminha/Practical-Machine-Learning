@@ -21,10 +21,10 @@ Read more: http://groupware.les.inf.puc-rio.br/har#ixzz3Hlq5ODBE
 Software
 -----------
 R 3.1.0 x64 (2014-04-10)
-Packages: caret, rpart and randomForest
+Packages: caret and randomForest
 
 Final notes
 -----------
-The gh-pages branch contain a compiled HTML of the cookbook.rmd which does not contain all the project code, just some outputs .
+The gh-pages branch contain a compiled HTML of the cookbook.rmd which does not contain all the project code, just some outputs.
 To consult the complete project code please visit the project.R file.
 
