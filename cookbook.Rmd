@@ -32,7 +32,7 @@ testing <- testing_original[,names(testing_original) %in% trainingCols]
 ```
 
 3. Model building: Cross validation
--------------------
+-----------------------------------
 Considering the predictors we were introduced, I've decided to use random forests. One of the reasons that I decided to used it is because I probably will study it more to see if it can help me classifying some data extra MOOC.
 My major goal was 1st to try using this predictor and by evaluating its performance and by checking the confusion matrix as well as other sub products, I expected to confirm that it can be used to predict the quiz's required output submission.
 To perform the cross validation I've splited the training dataset into 2 datasets, 60% vs 40 % for training and testing.
@@ -64,7 +64,7 @@ trainingConfTableAll
 The model results above, provided me an idea that it had a good enough accuracy, so it was time to use that with the testing dataset.
 
 3. Model building: Predicting results
------------------
+-------------------------------------
 The main idea was to use all training data set with the same model parameters against the testing dataset and check if it could predict the testing classe.
 The random forest model was built like shown bellow as well as its full outputs.
 
@@ -89,9 +89,6 @@ Using that model parameters, the predicted results were obtained next.
 ```{r, message=FALSE}
 resultrForest <- predict(modelFitrForest, testing)
 ```
-
-#INCLUIR E DEPOIS APAGAR: 
-#Describe what they expect the out of sample error to be and estimate the error appropriately with cross-validation?
 
 4. Result submission
 --------------------
